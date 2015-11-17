@@ -40,7 +40,7 @@ import android.os.Messenger;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
-import org.altbeacon.beacon.BuildConfig;
+//import org.altbeacon.beacon.BuildConfig;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.distance.DistanceCalculator;
 import org.altbeacon.beacon.distance.ModelSpecificDistanceCalculator;
@@ -198,7 +198,8 @@ public class BeaconService extends Service {
 
     @Override
     public void onCreate() {
-        LogManager.i(TAG, "beaconService version %s is starting up", BuildConfig.VERSION_NAME );
+        //LogManager.i(TAG, "beaconService version %s is starting up", BuildConfig.VERSION_NAME );
+        LogManager.i(TAG, "beaconService version %s is starting up", "xidian-beacon-library" );
         bluetoothCrashResolver = new BluetoothCrashResolver(this);
         bluetoothCrashResolver.start();
 

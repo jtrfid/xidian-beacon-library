@@ -8,7 +8,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
-import org.altbeacon.beacon.BuildConfig;
+//import org.altbeacon.beacon.BuildConfig;
 import org.json.JSONObject;
 
 /**
@@ -56,7 +56,8 @@ public class ModelSpecificDistanceUpdater extends AsyncTask<Void, Void, Void> {
         return Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
     private String getVersion() {
-        return BuildConfig.VERSION_NAME;
+        //return BuildConfig.VERSION_NAME;
+        return "xidian-beacon-library";
     }
 
     interface CompletionHandler {
