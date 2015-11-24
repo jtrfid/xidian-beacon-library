@@ -555,6 +555,7 @@ public class BeaconSearcher {
 	/**
 	 * 打开蓝牙
 	 */
+	@SuppressLint("NewApi")
 	public void enableBluetooth() {
 		if (android.os.Build.VERSION.SDK_INT < 18)
 			return;
