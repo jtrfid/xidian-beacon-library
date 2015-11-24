@@ -287,10 +287,12 @@ public class BeaconSearcher {
 		@Override
 		public void didRangeBeaconsInRegion(Collection<Beacon> beacons,
 				Region region) {
+			// 日志记录Beacon信息
 			LogManager.d(TAG,
 					"didRangeBeaconsInRegion(),beacons=" + beacons.size());
 			for (Beacon beacon : beacons) {
 				LogManager.d(TAG, beacon.getId2()+":"+beacon.getId3() + "," + beacon.getDistance());
+				LogManager.d(TAG, "Rssi="+beacon.getRssi()+",AveRssi="+beacon.getRunningAverageRssi());
 			}
 			Beacon beacon = mNearestBeacon.getNearestBeacon(mGetBeaconType,
 					beacons);
