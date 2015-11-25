@@ -202,6 +202,7 @@ public class Beacon implements Parcelable {
         for (int i = 0; i < size; i++) {
             mIdentifiers.add(Identifier.parse(in.readString()));
         }
+        mRunningAverageRssi = in.readDouble(); //djt
         mDistance = in.readDouble();
         mRssi = in.readInt();
         mTxPower = in.readInt();
@@ -514,6 +515,7 @@ public class Beacon implements Parcelable {
         for (Identifier identifier: mIdentifiers) {
             out.writeString(identifier == null ? null : identifier.toString());
         }
+        out.writeDouble(mRunningAverageRssi); // djt
         out.writeDouble(getDistance());
         out.writeInt(mRssi);
         out.writeInt(mTxPower);
