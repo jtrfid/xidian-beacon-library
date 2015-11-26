@@ -27,8 +27,9 @@ public class RangedBeacon {
         } catch (Exception e) {
             LogManager.e(TAG, "Could not construct RssiFilterImplClass %s", BeaconManager.getRssiFilterImplClass().getName());
         }
-
-        RunningAverageRssiFilter.setSampleExpirationMilliseconds(sampleExpirationMilliseconds);
+        
+        // 这里设置采样周期，覆盖了外部调用的设置，因此，这里不应该设置采样周期。
+        // RunningAverageRssiFilter.setSampleExpirationMilliseconds(sampleExpirationMilliseconds);
         updateBeacon(beacon);
     }
 
