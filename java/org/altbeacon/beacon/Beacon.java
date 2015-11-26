@@ -398,6 +398,7 @@ public class Beacon implements Parcelable {
         return mRssi;
     }
     /**
+     * djt add for test
      * @see #mRunningAverageRssi
      * @return mRunningAverageRssi
      */
