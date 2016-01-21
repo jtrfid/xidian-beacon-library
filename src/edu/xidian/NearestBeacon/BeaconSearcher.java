@@ -583,7 +583,7 @@ public class BeaconSearcher {
     
     /**
      * 设置RunningAverageRssiFilter的采样周期，缺省是20秒(20000毫秒)
-     * 即，计算该时间段内的平均RSSI（首位各去掉10%）
+     * 即，计算该时间段内的平均RSSI（首末各去掉10%）
      * 仅适应于RunningAverageRssiFilter
      * @param newSampleExpirationMilliseconds
      */
