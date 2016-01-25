@@ -14,7 +14,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 /**
- * 管理各个定位参考点测量的各个beacons的rssi平均值
+ * 管理在各个定位参考点测量的各个beacons的rssi平均值
  * 数据表：RssiInfo
  */
 public class RssiDbManagerHelper extends OrmLiteSqliteOpenHelper {

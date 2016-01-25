@@ -9,6 +9,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
+ * 数据表：RssiInfo
  * 记录各个定位参考点测量的各个beacons的rssi平均值
  */
 @DatabaseTable(tableName = "RssiInfo")
