@@ -14,6 +14,8 @@ import org.altbeacon.beacon.logging.LogManager;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import org.altbeacon.beacon.service.RunningAverageRssiFilter;
 
+import edu.xidian.NearestBeacon.DefaultDistanceCalcuator;
+
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
@@ -167,6 +169,14 @@ public class FindBeacons {
 		// 也可能是AltBeacon(即Radius)的Beacon,ok
 		mBeaconManager.getBeaconParsers().add(new AltBeaconParser()
 						.setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
+		
+		// 设置距离计算模型
+		DefaultDistanceCalcuator defaultDistanceCalcuator = new DefaultDistanceCalcuator(
+				mContext);
+		// 使用asserts/model-distance-calculations.json
+		defaultDistanceCalcuator.setDefaultDistanceCalcuator(null);
+		// 使用url
+		// defaultDistanceCalcuator.setDefaultDistanceCalcuator("http://data.altbeacon.org/android-distance.json");		
 
 		// 设置发现beacon监听回调，看到beacon，看不到beacon; 进入，离开，临界状态
 		// Specifies a class that should be called each time the BeaconService
