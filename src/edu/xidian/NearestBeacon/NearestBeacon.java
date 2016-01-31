@@ -164,7 +164,7 @@ public class NearestBeacon {
 	
 	/** 
 	 * 每个扫描周期结束，执行此函数，找出符合条件的beacon。用于展品定位<br>
-	 * 条件：距离最近(并且小于NEAREST_DISTANCE)，逗留时间大于最小停留时间(MIN_STAY_MILLISECONDS)
+	 * 条件：距离最近(并且小于NEAREST_DISTANCE)；逗留时间大于最小停留时间(MIN_STAY_MILLISECONDS)
 	 * 注意，函数的调用必须在nearestBeacon()之后调用
 	 * @return 符合条件的beacon; 不符合条件，返回null.
 	 */
@@ -179,7 +179,7 @@ public class NearestBeacon {
 		if (mExhibitBeacon == null) {
 			mExhibitBeacon = mNeaestBeacon;
 			mTimestamp = System.currentTimeMillis();
-			return null; // 第一次存储查品定位beacon，逗留时间肯定不符合条件，因此返回null
+			return null; // 第一次存储查产品定位beacon，逗留时间肯定不符合条件，因此返回null
 		}
 		
 		// 如果本次扫描周期最小距离beacon(mNeaestBeacon)与上一扫描周期存储的展品beacon(mExhibitBeacon)不同，则替换mExhibitBeacon
