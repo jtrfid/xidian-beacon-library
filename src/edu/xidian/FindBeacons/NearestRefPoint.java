@@ -1,10 +1,17 @@
 package edu.xidian.FindBeacons;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.logging.LogManager;
 
 /**
+ * 找出停留时间内，次数最多的最近参考点，次数>=2
  * 每次扫描周期结束，记录定位到最近参考点的时间；
  * 在一定的时间段内，统计次数最多的定位参考点。
  * 该段时间即为在该定位参考点的停留时间，从而定位到该定位参考点对应的展品。
@@ -12,8 +19,10 @@ import java.util.Iterator;
  */
 public class NearestRefPoint {
 	
+	private final static String TAG = NearestRefPoint.class.getSimpleName();
+	
 	/** 默认最小停留时间(ms),用于展品定位 */
-	public static long MIN_STAY_MILLISECONDS = 3000L; // 3s
+	public static long MIN_STAY_MILLISECONDS = 5000L; // 3s
 	
 	/** 最小停留时间(ms) */
 	private long mMin_stay_milliseconds;
@@ -25,7 +34,7 @@ public class NearestRefPoint {
 	private HashMap<String,ArrayList<Long>> mRefPoint = new HashMap<String,ArrayList<Long>>();
 	
 	/**
-	 * 统计次数最多的定位参考点。
+	 * 找出停留时间内，次数最多的最近参考点，次数>=2
 	 * @param stay_milliseconds 停留时间 
 	 */
 	public NearestRefPoint(long stay_milliseconds) {
@@ -33,7 +42,7 @@ public class NearestRefPoint {
 	}
 	
 	/**
-	 * 统计次数最多的定位参考点。
+	 * 找出停留时间内，次数最多的最近参考点，次数>=2
 	 * 默认停留时间{@link #MIN_STAY_MILLISECONDS}
 	 */
 	public NearestRefPoint() {
@@ -55,8 +64,62 @@ public class NearestRefPoint {
 	}
 	
 	/**
-	 * 获取停留时间内，时间序列最多（即次数做多）的最近参考点
-	 * @return 时间序列最多（即次数做多）的最近参考点
+	 * 本次扫描周期结束，获取最近参考点，并添加至mRefPoint，供统计时使用
+	 * @param beacons   本次扫描周期结束，找到的beacon集合
+	 * @param mRssiInfo 指纹训练阶段存储在数据库中的各个定位参考点的beacons的rssi平均值
+	 * @return 获取最近参考点
+	 */
+	public String getNearestRefPoint(Collection<Beacon> beacons,List<RssiInfo> mRssiInfo){
+		String str;
+    	// 定位参考点名称
+		String RPname;
+		/**
+		 * key: beacon的major,minor组成的字符串major_minor;
+		 * value: rssi平均值
+		 */
+		Map<String,Double> RSSIs = new HashMap<String,Double>();
+		
+		Double diff_sum = 0.0;    // 单位平方差
+		Double min_value = 0.0;   // 最小单位平方差对应
+		String min_RPname = null; // 最小单位平方差对应的定位参考点
+		for(RssiInfo rssi_info : mRssiInfo) { // RP,遍历每个定位参考点
+			diff_sum = 0.0; 
+			RPname = rssi_info.getRPname();
+			RSSIs = rssi_info.getRSSIs();
+			for (Beacon beacon : beacons) { // 遍历本次扫描周期测到的各个beacon
+				// becaon的两个id(major,minor)，rssi及其平均值
+				String key = beacon.getId2()+"_"+beacon.getId3();
+				Double rssi = beacon.getRunningAverageRssi();
+				Double rssi_db = RSSIs.get(key);
+				// 单位平方差
+                if (rssi_db != null) 
+					diff_sum = diff_sum + (rssi-rssi_db)*(rssi-rssi_db)/beacons.size();
+				else {
+					str = "数据库中无key="+key;
+					LogManager.d(TAG, str);
+				}
+			}  // RSSIs
+			if (min_value == 0.0) {
+				min_value = diff_sum;
+				min_RPname = RPname;
+			}
+			else if(min_value > diff_sum) {
+				min_value = diff_sum;
+				min_RPname = RPname;
+			}
+		} // for RP
+		
+		// 添加至mRefPoint，供统计时使用
+		addRefPoint(min_RPname);
+		str = "最近参考点："+min_RPname;
+		LogManager.d(TAG, str);
+		
+        return min_RPname;
+    }
+	
+	/**
+	 * 获取停留时间内，时间序列最多（即次数做多）的最近参考点；并且次数大于等于2
+	 * @return 时间序列最多（即次数做多）的最近参考点；并且次数大于等于2。若没有这样的参考点，返回null
 	 */
 	public String getNearestRefPoint(){
 		String RPname = null;
@@ -78,12 +141,13 @@ public class NearestRefPoint {
 					it_timestamp.remove(); // 删除迭代器的next()指向的元素，这里是timestamp
 				}
 			}
-			if(maxNum < timestamps.size()){
-				maxNum = timestamps.size();
+			int size = timestamps.size();
+			if(maxNum < size && size >=2 ){
+				maxNum = size;
 				maxRPname = RPname;
 			}
 			// 如果该参考点无时间戳序列，从mRefPoint删除之
-			if(timestamps.size() == 0)
+			if(size == 0)
 			  it.remove(); // 删除迭代器的next()指向的元素，这里是RPname(key)对应的键值对
 		}
 		
